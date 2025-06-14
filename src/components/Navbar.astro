@@ -1,0 +1,178 @@
+---
+import config from '../../public/config.json';
+const { navigation, brand, colors } = config;
+---
+
+<nav id="navbar" class="fixed top-0 left-0 w-full z-50 transition-all duration-300 bg-white shadow-sm">
+  <div class="container mx-auto px-4">
+    <div class="flex items-center justify-between h-20">
+      <!-- Logo -->
+      <a href="/" class="flex items-center space-x-3 z-50 group">
+        <div class="w-14 h-14 bg-gradient-to-br from-pink-500 to-orange-500 rounded-full flex items-center justify-center transform group-hover:scale-110 transition-transform shadow-lg">
+          <img src="/logo.jpg" alt="Logo" class="w-12 h-12 object-cover rounded-full" />
+        </div>
+        <div class="hidden sm:block">
+          <h1 class="font-black text-2xl text-gray-900">
+            <span class="bg-gradient-to-r from-pink-500 to-orange-500 bg-clip-text text-transparent">
+              {brand.name}
+            </span>
+          </h1>
+          <p class="text-xs text-gray-600 font-medium -mt-1">{brand.slogan}</p>
+        </div>
+      </a>
+      
+      <!-- Desktop Menu -->
+      <ul class="hidden md:flex items-center space-x-8">
+        {navigation.map((item) => (
+          <li>
+            <a 
+              href={'/' + item.href}
+              class="text-gray-800 hover:text-pink-500 font-bold text-sm uppercase tracking-wide transition-colors duration-300 relative group py-2"
+            >
+              {item.label}
+              <span class="absolute bottom-0 left-0 w-0 h-1 bg-gradient-to-r from-pink-500 to-orange-500 transition-all duration-300 group-hover:w-full rounded-full"></span>
+            </a>
+          </li>
+        ))}
+
+        <li>
+          <a 
+            href="/catalogo" 
+            class="bg-gradient-to-r from-pink-500 to-orange-500 text-white px-8 py-3 rounded-full font-black text-sm uppercase tracking-wide hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+          >
+            ORDENAR AHORA
+          </a>
+        </li>
+      </ul>
+      
+      <!-- Mobile Menu Button -->
+      <button id="mobile-menu-btn" class="md:hidden z-50 relative w-10 h-10 focus:outline-none bg-gray-100 rounded-full flex items-center justify-center">
+        <div class="hamburger-container">
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+        </div>
+      </button>
+    </div>
+  </div>
+  
+  <!-- Mobile Menu -->
+  <div id="mobile-menu" class="mobile-menu md:hidden">
+    <div class="bg-white min-h-screen pt-24 px-6">
+      <ul class="flex flex-col space-y-8">
+        {navigation.map((item) => (
+          <li>
+            <a 
+              href={item.href}
+              class="text-2xl font-black text-gray-800 hover:text-pink-500 transition-colors uppercase tracking-wide block py-2"
+            >
+              {item.label}
+            </a>
+          </li>
+        ))}
+
+        <li class="pt-6">
+          <a 
+            href="/catalogo" 
+            class="bg-gradient-to-r from-pink-500 to-orange-500 text-white px-8 py-4 rounded-full font-black text-xl uppercase tracking-wide text-center block shadow-xl"
+          >
+            ORDENAR AHORA
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<style>
+  #navbar.scrolled {
+    background-color: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  }
+  
+  .hamburger-container {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  
+  .hamburger-line {
+    @apply block w-5 h-0.5 bg-gray-700 transition-all duration-300 rounded-full;
+  }
+  
+  .hamburger-open .hamburger-line:nth-child(1) {
+    transform: rotate(45deg) translate(4px, 4px);
+  }
+  
+  .hamburger-open .hamburger-line:nth-child(2) {
+    opacity: 0;
+  }
+  
+  .hamburger-open .hamburger-line:nth-child(3) {
+    transform: rotate(-45deg) translate(4px, -4px);
+  }
+  
+  .mobile-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    transform: translateY(-100%);
+    transition: transform 0.3s ease-in-out;
+    z-index: 40;
+  }
+  
+  .mobile-menu.active {
+    transform: translateY(0);
+  }
+</style>
+
+<script>
+  import gsap from 'gsap';
+  
+  document.addEventListener('astro:page-load', () => {
+    const navbar = document.getElementById('navbar');
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    let lastScroll = 0;
+    
+    // Navbar scroll effect
+    window.addEventListener('scroll', () => {
+      const currentScroll = window.pageYOffset;
+      
+      if (currentScroll > 50) {
+        navbar?.classList.add('scrolled');
+      } else {
+        navbar?.classList.remove('scrolled');
+      }
+      
+      // Hide/show on scroll - pero no en página de catálogo
+      const isOnCatalog = window.location.pathname === '/catalogo';
+      
+      if (!isOnCatalog && currentScroll > lastScroll && currentScroll > 100) {
+        gsap.to(navbar, { y: -100, duration: 0.3 });
+      } else {
+        gsap.to(navbar, { y: 0, duration: 0.3 });
+      }
+      
+      lastScroll = currentScroll;
+    });
+    
+    // Mobile menu toggle
+    mobileMenuBtn?.addEventListener('click', () => {
+      mobileMenuBtn.classList.toggle('hamburger-open');
+      mobileMenu?.classList.toggle('active');
+    });
+    
+    // Close mobile menu on link click
+    const mobileLinks = mobileMenu?.querySelectorAll('a');
+    mobileLinks?.forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenuBtn?.classList.remove('hamburger-open');
+        mobileMenu?.classList.remove('active');
+      });
+    });
+  });
+</script>

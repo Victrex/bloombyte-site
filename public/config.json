@@ -1,0 +1,85 @@
+{
+  "brand": {
+    "name": "Bloom & Bite",
+    "slogan": "Del horno a tu corazón",
+    "logo": "/images/logo.png"
+  },
+  "colors": {
+    "primary": "#E6B8A2",
+    "secondary": "#8B5A2B",
+    "accent": "#FFE4E1",
+    "mint": "#C1E1C1",
+    "coral": "#FFBCB3",
+    "cream": "#FFF5E1",
+    "dark": "#3B2F2F",
+    "turquoise": "#40C4D4",
+    "pink": "#FF69B4",
+    "yellow": "#FFD700"
+  },
+  "navigation": [
+    { "id": "hero", "label": "Inicio", "href": "#hero" },
+    { "id": "products", "label": "Sabores", "href": "#products" },
+    { "id": "about", "label": "Nosotros", "href": "#about" },
+    { "id": "services", "label": "Servicios", "href": "#services" },
+    { "id": "contact", "label": "Contacto", "href": "#contact" }
+  ],
+  "social": {
+    "instagram": "https://www.instagram.com/bloom_bitehn",
+    "facebook": "https://www.facebook.com/share/19FDvJg4JA/",
+    "tiktok": "https://www.tiktok.com/@bloombite2",
+    "whatsapp": "+504XXXXXXXX",
+    "email": "infobloombite@gmail.com"
+  },
+  "hero": {
+    "title": "Roles de canela artesanales",
+    "subtitle": "Sabores innovadores que despiertan emociones",
+    "cta": {
+      "primary": "¡Ordena Ya!",
+      "secondary": "Ver Catálogo"
+    }
+  },
+  "about": {
+    "mission": "Ofrecer roles de canela artesanales con sabores únicos y de calidad, elaborados con ingredientes frescos que combinan tradición e innovación.",
+    "vision": "Ser la marca referente en roles de canela artesanales en Honduras, reconocida por su sabor, calidad e innovación.",
+    "history": "Bloom & Bite nace de una idea sencilla pero poderosa: transformar el amor por la repostería en una experiencia única y diferente. En un mercado saturado de opciones tradicionales, decidimos apostar por la creatividad, elaborando roles de canela artesanales con sabores innovadores que despiertan emociones y recuerdos."
+  },
+  "values": [
+    {
+      "title": "Calidad Artesanal",
+      "description": "Productos elaborados con dedicación y los mejores ingredientes",
+      "icon": "🎯"
+    },
+    {
+      "title": "Creatividad e Innovación",
+      "description": "Exploramos sabores nuevos y presentaciones únicas",
+      "icon": "💡"
+    },
+    {
+      "title": "Compromiso",
+      "description": "Cada rol refleja el amor por la repostería",
+      "icon": "❤️"
+    },
+    {
+      "title": "Accesibilidad",
+      "description": "Precios justos sin sacrificar calidad",
+      "icon": "🤝"
+    }
+  ],
+  "animations": {
+    "hero": {
+      "parallax": true,
+      "fadeIn": true,
+      "duration": 1.5
+    },
+    "navbar": {
+      "shrinkOnScroll": true,
+      "changeBackground": true,
+      "animationDuration": 0.3
+    },
+    "sections": {
+      "fadeInUp": true,
+      "stagger": 0.2,
+      "duration": 0.8
+    }
+  }
+}

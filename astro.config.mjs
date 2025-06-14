@@ -1,5 +1,19 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 
-// https://astro.build/config
-export default defineConfig({});
+import tailwind from '@astrojs/tailwind';
+import react from '@astrojs/react';
+import node from '@astrojs/node';
+
+export default defineConfig({
+  integrations: [tailwind(), react()],
+  output: 'server',
+  adapter: node({
+    mode: 'standalone'
+  }),
+  vite: {
+    ssr: {
+      external: ['mysql2']
+    }
+  }
+});

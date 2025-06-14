@@ -1,0 +1,106 @@
+[
+  {
+    "name": "Clásico Enrollado",
+    "description": "El clásico rol de canela, suavecito, esponjoso y con ese sabor que nunca falla. ¡Una locura deliciosa!",
+    "price": 80,
+    "category": "normal",
+    "is_popular": true,
+    "image_url": "/images/products/clasico.jpg"
+  },
+  {
+    "name": "Galleta Enrollada",
+    "description": "La combinación perfecta de crema y galleta crujiente en un rol suave. ¡Una bomba de sabor!",
+    "price": 85,
+    "category": "normal",
+    "is_popular": false,
+    "image_url": "/images/products/galleta.jpg"
+  },
+  {
+    "name": "Choco Rol",
+    "description": "Para los amantes del chocolate: relleno, cobertura y actitud chocolatosa. ¡Puro antojo!",
+    "price": 85,
+    "category": "normal",
+    "is_popular": true,
+    "image_url": "/images/products/chocolate.jpg"
+  },
+  {
+    "name": "Dulce Rol",
+    "description": "Dulce, cremoso y provocativo. El dulce de leche lo lleva a otro nivel de sabrosura.",
+    "price": 85,
+    "category": "normal",
+    "is_popular": false,
+    "image_url": "/images/products/dulce.jpg"
+  },
+  {
+    "name": "Café Rollado",
+    "description": "Un rol con aroma a café recién hecho. Perfecto para acompañar tu mañana o tu tarde.",
+    "price": 85,
+    "category": "normal",
+    "is_popular": true,
+    "image_url": "/images/products/cafe.jpg"
+  },
+  {
+    "name": "Rol Fresita",
+    "description": "Dulce, frutal y encantador. El sabor de fresa se siente como un besito en cada mordida.",
+    "price": 90,
+    "category": "fruta",
+    "is_popular": true,
+    "image_url": "/images/products/fresa.jpg"
+  },
+  {
+    "name": "Azul Enrollado",
+    "description": "Jugosas moras azules encima de un rol suave. ¡Fresco, frutal y adictivo!",
+    "price": 90,
+    "category": "fruta",
+    "is_popular": false,
+    "image_url": "/images/products/mora.jpg"
+  },
+  {
+    "name": "Tropical Twist",
+    "description": "Piña, mango y coco en perfecta armonía. Un viaje tropical en cada bocado.",
+    "price": 95,
+    "category": "fruta",
+    "is_popular": false,
+    "image_url": "/images/products/tropical.jpg"
+  },
+  {
+    "name": "Saladito (Queso y Jamón)",
+    "description": "Ideal para los que no son tan dulceros. Una combinación perfecta de queso y jamón.",
+    "price": 95,
+    "category": "salado",
+    "is_popular": true,
+    "image_url": "/images/products/salado.jpg"
+  },
+  {
+    "name": "Pizza Roll",
+    "description": "Salsa de tomate, queso mozzarella y pepperoni en un rol suave y esponjoso.",
+    "price": 100,
+    "category": "salado",
+    "is_popular": false,
+    "image_url": "/images/products/pizza.jpg"
+  },
+  {
+    "name": "Rol de Temporada",
+    "description": "Nuestro rol especial del mes. ¡Pregunta por el sabor actual!",
+    "price": 100,
+    "category": "especial",
+    "is_popular": false,
+    "image_url": "/images/products/temporada.jpg"
+  },
+  {
+    "name": "Rol Premium Gold",
+    "description": "Nuestra creación más exclusiva con ingredientes premium importados y un toque de oro comestible.",
+    "price": 150,
+    "category": "especial",
+    "is_popular": true,
+    "image_url": "/images/products/premium.jpg"
+  },
+  {
+    "name": "Rol Arcoíris",
+    "description": "Colorido y divertido, con capas de diferentes sabores frutales. ¡Perfecto para celebraciones!",
+    "price": 110,
+    "category": "especial",
+    "is_popular": false,
+    "image_url": "/images/products/arcoiris.jpg"
+  }
+]

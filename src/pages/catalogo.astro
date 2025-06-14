@@ -1,0 +1,167 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+import ProductGrid from '../components/ProductGrid.astro';
+import config from '../../public/config.json';
+import ecommerceConfig from '../../public/ecommerce-config.json';
+import { Product } from '../models/Product.js';
+
+// Obtener productos de la base de datos
+let products = [];
+try {
+  products = await Product.getAll();
+} catch (error) {
+  console.error('Error loading products:', error);
+  // Usar productos de ejemplo si falla la DB
+  products = [
+    {
+      id: 1,
+      name: "Clásico Enrollado",
+      description: "El clásico rol de canela, suavecito, esponjoso y con ese sabor que nunca falla.",
+      price: 80,
+      category: "normal",
+      image_url: "/images/product-classic.jpg"
+    },
+    // ... más productos de ejemplo
+  ];
+}
+
+const { categories } = ecommerceConfig;
+---
+
+<Layout title="Catálogo" description="Descubre todos nuestros deliciosos roles de canela">
+  <Navbar />
+  
+  <main class="pt-20">
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-br from-pink-100 via-yellow-50 to-orange-100 py-16">
+      <div class="container mx-auto px-4 text-center">
+        <h1 class="font-brand text-4xl md:text-6xl text-gray-800 mb-4">
+          Nuestro Catálogo
+        </h1>
+        <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+          Explora toda nuestra variedad de roles de canela artesanales. 
+          Desde los clásicos hasta nuestras creaciones más innovadoras.
+        </p>
+      </div>
+    </section>    <!-- Filters Section -->
+    <section class="sticky top-20 bg-white shadow-md z-20 py-2">
+      <div class="container mx-auto px-4">
+        <div class="flex flex-wrap items-center justify-between gap-4">
+          <!-- Categories -->
+          <div class="flex flex-wrap gap-2">
+            <button 
+              class="category-filter active px-4 py-2 rounded-full text-sm font-medium transition-all"
+              data-category="all"
+            >
+              Todos
+            </button>
+            {categories.map(category => (
+              <button 
+                class={`category-filter px-4 py-2 rounded-full text-sm font-medium transition-all`}
+                data-category={category.id}
+              >
+                {category.name}
+              </button>
+            ))}
+          </div>
+          
+          <!-- Search -->
+          <div class="relative">
+            <input 
+              type="text" 
+              id="search-input"
+              placeholder="Buscar roles..." 
+              class="pl-10 pr-4 py-2 border border-gray-300 rounded-full focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all"
+            />
+            <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Products Grid -->
+    <section class="py-12">
+      <div class="container mx-auto px-4">
+        <ProductGrid products={products} />
+      </div>
+    </section>
+    
+    <!-- Info Banner -->
+    <section class="bg-gradient-to-r from-pink-500 to-orange-500 py-12">
+      <div class="container mx-auto px-4 text-center text-white">
+        <h2 class="text-3xl font-bold mb-4">¿Necesitas algo especial?</h2>
+        <p class="text-lg mb-6">
+          Hacemos pedidos personalizados para eventos y ocasiones especiales
+        </p>
+        <a 
+          href="/#contact" 
+          class="inline-block bg-white text-pink-500 px-8 py-3 rounded-full font-bold hover:shadow-lg transform hover:scale-105 transition-all"
+        >
+          Contáctanos
+        </a>
+      </div>
+    </section>
+  </main>
+  
+  <Footer />
+</Layout>
+
+<style>
+  .category-filter {
+    @apply bg-gray-100 text-gray-700 hover:bg-gray-200;
+  }
+  
+  .category-filter.active {
+    @apply bg-gradient-to-r from-pink-500 to-orange-500 text-white;
+  }
+</style>
+
+<script>
+  // Filtrado de productos
+  document.addEventListener('astro:page-load', () => {
+    const categoryButtons = document.querySelectorAll('.category-filter');
+    const searchInput = document.getElementById('search-input');
+    const products = document.querySelectorAll('.product-grid-item');
+    
+    // Filtrar por categoría
+    categoryButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        // Update active state
+        categoryButtons.forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
+        
+        const category = button.getAttribute('data-category');
+        filterProducts(category, (searchInput as HTMLInputElement)?.value || '');
+      });
+    });
+    
+    // Filtrar por búsqueda
+    searchInput?.addEventListener('input', (e) => {
+      const activeCategory = document.querySelector('.category-filter.active')?.getAttribute('data-category') || 'all';
+      filterProducts(activeCategory, (e.target as HTMLInputElement).value);
+    });
+    
+    function filterProducts(category: string | null, search: string) {
+      const searchLower = search.toLowerCase();
+      
+      products.forEach(product => {
+        const productCategory = product.getAttribute('data-category');
+        const productName = product.getAttribute('data-name')?.toLowerCase() || '';
+        const productDesc = product.getAttribute('data-description')?.toLowerCase() || '';
+        
+        const matchesCategory = category === 'all' || productCategory === category;
+        const matchesSearch = !search || productName.includes(searchLower) || productDesc.includes(searchLower);
+        
+        if (matchesCategory && matchesSearch) {
+          (product as HTMLElement).style.display = 'block';
+        } else {
+          (product as HTMLElement).style.display = 'none';
+        }
+      });
+    }
+  });
+</script>

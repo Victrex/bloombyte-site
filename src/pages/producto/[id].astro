@@ -1,0 +1,266 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Navbar from '../../components/Navbar.astro';
+import Footer from '../../components/Footer.astro';
+import { Product } from '../../models/Product.js';
+
+// Get product ID from URL
+const { id } = Astro.params;
+
+// Load product data dynamically
+let product = null;
+try {
+  if (id) {
+    product = await Product.getById(parseInt(id));
+    console.log(`Loading product with ID: ${id}`, product);
+  }
+} catch (error) {
+  console.error('Error loading product:', error);
+}
+
+// Redirect to catalog if product is not found
+if (!product) {
+  return Astro.redirect('/catalogo');
+}
+
+// Get related products
+let relatedProducts = [];
+try {
+  if (product && product.category) {
+    relatedProducts = await Product.getByCategory(product.category);
+    relatedProducts = relatedProducts.filter(p => p.id !== product.id).slice(0, 4);
+  }
+} catch (error) {
+  console.error('Error loading related products:', error);
+}
+---
+
+<Layout title={product.name} description={product.description}>
+  <Navbar />
+  
+  <main class="pt-20">
+    <!-- Breadcrumb -->
+    <div class="bg-gray-50 py-4">
+      <div class="container mx-auto px-4">
+        <nav class="flex items-center gap-2 text-sm text-gray-600">
+          <a href="/" class="hover:text-pink-500 transition-colors">Inicio</a>
+          <span>/</span>
+          <a href="/catalogo" class="hover:text-pink-500 transition-colors">Catálogo</a>
+          <span>/</span>
+          <span class="text-gray-800 font-medium">{product.name}</span>
+        </nav>
+      </div>
+    </div>
+    
+    <!-- Product Detail -->
+    <section class="py-12">
+      <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+          <!-- Product Image -->
+          <div class="product-image-container">
+            <div class="relative bg-gradient-to-br from-pink-100 to-orange-100 rounded-3xl overflow-hidden shadow-2xl aspect-square">
+                {product.image_url ? (
+                <img 
+                  src={product.image_url} 
+                  alt={product.name} 
+                  class="w-full h-full object-cover object-center"
+                  loading="lazy"
+                />
+                ) : (
+                <>
+                  <div class="absolute inset-0 bg-gradient-to-br from-amber-300 via-orange-400 to-amber-500 opacity-50"></div>
+                  <div class="absolute inset-0 flex items-center justify-center">
+                  <div class="w-3/4 h-3/4 bg-gradient-to-br from-amber-400 via-orange-500 to-amber-600 rounded-full shadow-2xl animate-float">
+                    <div class="absolute inset-4 bg-gradient-to-br from-amber-300 via-orange-400 to-amber-500 rounded-full"></div>
+                    <div class="absolute inset-8 bg-gradient-to-br from-amber-200 via-orange-300 to-amber-400 rounded-full"></div>
+                    <div class="absolute inset-12 bg-gradient-to-br from-white via-orange-100 to-amber-200 rounded-full"></div>
+                  </div>
+                  </div>
+                </>
+                )}
+              
+              {product.is_popular && (
+                <div class="absolute top-6 left-6">
+                  <span class="bg-gradient-to-r from-pink-500 to-orange-500 text-white text-sm font-bold px-4 py-2 rounded-full shadow-lg">
+                    ⭐ Producto Popular
+                  </span>
+                </div>
+              )}
+            </div>
+            
+            <!-- Gallery Thumbnails -->
+            <!-- <div class="flex gap-4 mt-6 justify-center">
+              {[1,2,3,4].map(() => (
+                <div class="w-20 h-20 bg-gradient-to-br from-pink-100 to-orange-100 rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity">
+                  <div class="w-full h-full bg-gradient-to-br from-amber-300 to-orange-400 opacity-50"></div>
+                </div>
+              ))}
+            </div> -->
+          </div>
+          
+          <!-- Product Info -->
+          <div class="product-info">
+            <h1 class="text-4xl font-bold text-gray-800 mb-4">
+              {product.name}
+            </h1>
+            
+            <div class="flex items-center gap-4 mb-6">
+              <span class="text-3xl font-bold text-pink-500">
+                L.{product.price}
+              </span>
+              <span class="bg-gray-100 px-3 py-1 rounded-full text-sm font-medium text-gray-700">
+                {product.category === 'normal' && '🥐 Clásico'}
+                {product.category === 'fruta' && '🍓 Frutal'}
+                {product.category === 'salado' && '🧀 Salado'}
+                {product.category === 'especial' && '✨ Especial'}
+              </span>
+            </div>
+            
+            <p class="text-lg text-gray-600 mb-8 leading-relaxed">
+              {product.description}
+            </p>
+            
+            <!-- Features -->
+            <div class="grid grid-cols-2 gap-4 mb-8">
+              <div class="bg-pink-50 rounded-xl p-4">
+                <div class="flex items-center gap-3">
+                  <span class="text-2xl">🌟</span>
+                  <div>
+                    <p class="font-semibold text-gray-800">Artesanal</p>
+                    <p class="text-sm text-gray-600">Hecho a mano</p>
+                  </div>
+                </div>
+              </div>
+              <div class="bg-orange-50 rounded-xl p-4">
+                <div class="flex items-center gap-3">
+                  <span class="text-2xl">🎯</span>
+                  <div>
+                    <p class="font-semibold text-gray-800">Fresco</p>
+                    <p class="text-sm text-gray-600">Horneado diario</p>
+                  </div>
+                </div>
+              </div>
+              <div class="bg-yellow-50 rounded-xl p-4">
+                <div class="flex items-center gap-3">
+                  <span class="text-2xl">❤️</span>
+                  <div>
+                    <p class="font-semibold text-gray-800">Calidad</p>
+                    <p class="text-sm text-gray-600">Ingredientes premium</p>
+                  </div>
+                </div>
+              </div>
+              <div class="bg-green-50 rounded-xl p-4">
+                <div class="flex items-center gap-3">
+                  <span class="text-2xl">🚚</span>
+                  <div>
+                    <p class="font-semibold text-gray-800">Delivery</p>
+                    <p class="text-sm text-gray-600">A domicilio</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Add to Cart -->
+            <div class="flex gap-4">
+              <button 
+                id="add-to-cart-detail"
+                class="flex-1 bg-gradient-to-r from-pink-500 to-orange-500 text-white font-bold py-4 rounded-full hover:shadow-lg transform hover:scale-105 transition-all duration-300"
+                data-product={JSON.stringify(product)}
+              >
+                Agregar al Carrito
+              </button>
+              <a 
+                href="/catalogo" 
+                class="px-6 py-4 border-2 border-gray-300 text-gray-700 font-medium rounded-full hover:border-pink-500 hover:text-pink-500 transition-all"
+              >
+                Volver
+              </a>
+            </div>
+            
+            <!-- Info -->
+            <div class="mt-8 p-6 bg-gray-50 rounded-2xl">
+              <h3 class="font-semibold text-gray-800 mb-3">Información importante:</h3>
+              <ul class="space-y-2 text-sm text-gray-600">
+                <li class="flex items-start gap-2">
+                  <span class="text-pink-500 mt-0.5">•</span>
+                  <span>Producto fresco, consumir el mismo día de compra</span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-pink-500 mt-0.5">•</span>
+                  <span>Puede contener trazas de frutos secos</span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-pink-500 mt-0.5">•</span>
+                  <span>Conservar en lugar fresco y seco</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Related Products -->
+    {relatedProducts.length > 0 && (
+      <section class="py-12 bg-gray-50">
+        <div class="container mx-auto px-4">
+          <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">
+            También te puede gustar
+          </h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {relatedProducts.map(relatedProduct => (
+              <a 
+                href={`/producto/${relatedProduct.id}`}
+                class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group"
+              >
+                <div class="h-48 bg-gradient-to-br from-pink-100 to-orange-100"></div>
+                <div class="p-4">
+                  <h3 class="font-semibold text-gray-800 mb-1 group-hover:text-pink-500 transition-colors">
+                    {relatedProduct.name}
+                  </h3>
+                  <p class="text-pink-500 font-bold">L.{relatedProduct.price}</p>
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+  </main>
+  
+  <Footer />
+</Layout>
+
+<style>
+  .product-image-container {
+    view-transition-name: product-image;
+  }
+  
+  .product-info {
+    view-transition-name: product-info;
+  }
+</style>
+
+<script>
+  import { addToCart } from '../../stores/cartStore';
+  
+  document.addEventListener('astro:page-load', () => {
+    const addButton = document.getElementById('add-to-cart-detail');
+    
+    addButton?.addEventListener('click', () => {
+      const productData = addButton.getAttribute('data-product');
+      if (productData) {
+        const product = JSON.parse(productData);
+        addToCart(product);
+        
+        // Animación del botón
+        const originalText = addButton.textContent;
+        addButton.innerHTML = '<span class="flex items-center justify-center gap-2"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg> Agregado</span>';
+        
+        setTimeout(() => {
+          addButton.textContent = originalText;
+        }, 2000);
+      }
+    });
+  });
+</script>

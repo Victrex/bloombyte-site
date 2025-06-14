@@ -1,0 +1,72 @@
+{
+  "store": {
+    "name": "Bloom & Bite - Tienda",
+    "currency": "L.",
+    "currencyCode": "HNL",
+    "whatsappNumber": "+504XXXXXXXX",
+    "minimumOrder": 50,
+    "deliveryFee": 50,
+    "freeDeliveryThreshold": 500,
+    "orderMessage": "¡Hola! Me gustaría ordenar los siguientes productos:",
+    "businessHours": {
+      "monday": "8:00 AM - 6:00 PM",
+      "tuesday": "8:00 AM - 6:00 PM",
+      "wednesday": "8:00 AM - 6:00 PM",
+      "thursday": "8:00 AM - 6:00 PM",
+      "friday": "8:00 AM - 6:00 PM",
+      "saturday": "9:00 AM - 4:00 PM",
+      "sunday": "Cerrado"
+    }
+  },
+  "categories": [
+    {
+      "id": "normal",
+      "name": "Roles Clásicos",
+      "description": "Nuestros sabores tradicionales",
+      "color": "from-amber-400 to-orange-500"
+    },
+    {
+      "id": "fruta",
+      "name": "Roles Frutales",
+      "description": "Con el toque fresco de las frutas",
+      "color": "from-pink-400 to-red-500"
+    },
+    {
+      "id": "salado",
+      "name": "Roles Salados",
+      "description": "Para los que prefieren lo salado",
+      "color": "from-yellow-400 to-amber-500"
+    },
+    {
+      "id": "especial",
+      "name": "Edición Especial",
+      "description": "Creaciones únicas y temporales",
+      "color": "from-purple-400 to-pink-500"
+    }
+  ],
+  "orderStatus": {
+    "pending": {
+      "label": "Pendiente",
+      "color": "yellow",
+      "icon": "⏳"
+    },
+    "completed": {
+      "label": "Completada",
+      "color": "green",
+      "icon": "✅"
+    },
+    "cancelled": {
+      "label": "Cancelada",
+      "color": "red",
+      "icon": "❌"
+    }
+  },
+  "cartMessages": {
+    "empty": "Tu carrito está vacío",
+    "addItem": "Producto agregado al carrito",
+    "removeItem": "Producto eliminado del carrito",
+    "minimumOrder": "El pedido mínimo es de",
+    "checkoutSuccess": "¡Tu pedido ha sido enviado!",
+    "checkoutError": "Hubo un error al procesar tu pedido"
+  }
+}

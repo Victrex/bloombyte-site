@@ -1,0 +1,136 @@
+---
+const services = [
+  {
+    icon: "🚚",
+    title: "Entrega a Domicilio",
+    description: "Llevamos tus roles favoritos hasta la puerta de tu casa",
+    features: ["Entrega rápida", "Empaque seguro", "Seguimiento en tiempo real"]
+  },
+  {
+    icon: "🎉",
+    title: "Pedidos para Eventos",
+    description: "Endulza tus celebraciones con nuestros roles artesanales",
+    features: ["Pedidos personalizados", "Descuentos por volumen", "Decoración especial"]
+  },
+  {
+    icon: "📱",
+    title: "Ordena por WhatsApp",
+    description: "Proceso simple y rápido para ordenar tus favoritos",
+    features: ["Atención personalizada", "Confirmación inmediata", "Múltiples formas de pago"]
+  }
+];
+---
+
+<section id="services" class="py-20 bg-gradient-to-b from-pink-50 to-white">
+  <div class="container mx-auto px-4">
+    <!-- Section Header -->
+    <div class="text-center mb-16 fade-in">
+      <span class="text-pink-500 font-semibold text-sm uppercase tracking-wider">Nuestros Servicios</span>
+      <h2 class="font-brand text-4xl md:text-5xl text-gray-800 mt-2 mb-4">
+        Tu comodidad es nuestra prioridad
+      </h2>
+      <p class="text-gray-600 text-lg max-w-2xl mx-auto">
+        Ofrecemos diferentes opciones para que disfrutes de nuestros roles de canela de la manera más conveniente para ti
+      </p>
+    </div>
+    
+    <!-- Services Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 stagger-container">
+      {services.map((service, index) => (
+        <div class="stagger-item">
+          <div class="service-card h-full bg-white rounded-2xl shadow-lg p-8 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 relative overflow-hidden">
+            <!-- Background decoration -->
+            <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-pink-100 to-orange-100 rounded-full -mr-16 -mt-16 opacity-50"></div>
+            
+            <!-- Icon -->
+            <div class="relative z-10 text-6xl mb-6">{service.icon}</div>
+            
+            <!-- Content -->
+            <h3 class="text-2xl font-bold text-gray-800 mb-3">{service.title}</h3>
+            <p class="text-gray-600 mb-6">{service.description}</p>
+            
+            <!-- Features -->
+            <ul class="space-y-2">
+              {service.features.map(feature => (
+                <li class="flex items-center gap-2 text-sm text-gray-600">
+                  <svg class="w-4 h-4 text-pink-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                  </svg>
+                  {feature}
+                </li>
+              ))}
+            </ul>
+            
+            <!-- CTA -->
+            <div class="mt-8">
+              <a href="#contact" class="inline-flex items-center gap-2 text-pink-500 font-medium hover:text-orange-500 transition-colors">
+                Más información
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+    
+    <!-- Process Steps -->
+    <div class="mt-20 fade-in">
+      <h3 class="text-2xl font-bold text-center text-gray-800 mb-12">
+        ¿Cómo ordenar?
+      </h3>
+      <div class="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-4 max-w-4xl mx-auto">
+        {[
+          { step: "1", title: "Elige", desc: "Selecciona tus roles favoritos" },
+          { step: "2", title: "Ordena", desc: "Envía tu pedido por WhatsApp" },
+          { step: "3", title: "Recibe", desc: "Disfruta en casa o recoge" }
+        ].map((item, index) => (
+          <>
+            <div class="process-step text-center">
+              <div class="w-16 h-16 bg-gradient-to-r from-pink-500 to-orange-500 rounded-full flex items-center justify-center text-white font-bold text-xl mx-auto mb-4">
+                {item.step}
+              </div>
+              <h4 class="font-bold text-lg text-gray-800 mb-2">{item.title}</h4>
+              <p class="text-sm text-gray-600">{item.desc}</p>
+            </div>
+            {index < 2 && (
+              <div class="hidden md:block">
+                <svg class="w-8 h-8 text-pink-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                </svg>
+              </div>
+            )}
+          </>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .service-card {
+    background: linear-gradient(135deg, #ffffff 0%, #fff9f9 100%);
+    border: 1px solid rgba(255, 182, 193, 0.1);
+  }
+  
+  .service-card:hover {
+    border-color: rgba(255, 182, 193, 0.3);
+  }
+  
+  .process-step {
+    animation: fadeInUp 0.8s ease-out forwards;
+    opacity: 0;
+  }
+  
+  .process-step:nth-child(1) { animation-delay: 0.2s; }
+  .process-step:nth-child(3) { animation-delay: 0.4s; }
+  .process-step:nth-child(5) { animation-delay: 0.6s; }
+  
+  @keyframes fadeInUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>

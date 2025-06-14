@@ -1,0 +1,261 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Fuentes personalizadas */
+@layer base {
+  /* Animaciones de notificaciones */
+  @keyframes slideIn {
+    from {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+  
+  @keyframes slideOut {
+    from {
+      transform: translateX(0);
+      opacity: 1;
+    }
+    to {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+  }
+  
+  /* Animación de carga */
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  
+  /* Animación de pulso para elementos destacados */
+  @keyframes pulse-scale {
+    0%, 100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.05);
+    }
+  }
+  
+  /* Gradientes personalizados */
+  .gradient-primary {
+    @apply bg-gradient-to-r from-pink-500 to-orange-500;
+  }
+  
+  .gradient-secondary {
+    @apply bg-gradient-to-r from-yellow-400 to-pink-500;
+  }
+  
+  .gradient-accent {
+    @apply bg-gradient-to-r from-purple-500 to-pink-500;
+  }
+  
+  /* Efectos de hover personalizados */
+  .hover-lift {
+    @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-lg;
+  }
+  
+  .hover-glow {
+    @apply transition-all duration-300 hover:shadow-[0_0_20px_rgba(255,182,193,0.5)];
+  }
+  
+  /* Scrollbar personalizado */
+  ::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    @apply bg-pink-50;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    @apply bg-gradient-to-b from-pink-400 to-orange-400 rounded-full;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-gradient-to-b from-pink-500 to-orange-500;
+  }
+  
+  /* Clases de utilidad personalizadas */
+  .text-gradient {
+    @apply bg-gradient-to-r from-pink-500 to-orange-500 bg-clip-text text-transparent;
+  }
+  
+  .card-shadow {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 
+                0 2px 4px -1px rgba(0, 0, 0, 0.06),
+                0 0 0 1px rgba(255, 182, 193, 0.1);
+  }
+  
+  /* Loader */
+  .loader {
+    @apply inline-block w-8 h-8 border-4 border-pink-200 border-t-pink-500 rounded-full;
+    animation: spin 1s linear infinite;
+  }
+  
+  /* Tooltips */
+  .tooltip {
+    @apply invisible opacity-0 absolute z-50 bg-gray-800 text-white text-sm rounded-lg py-2 px-3 whitespace-nowrap transition-all duration-200;
+  }
+  
+  .tooltip-trigger:hover .tooltip {
+    @apply visible opacity-100;
+  }
+  
+  /* Badges */
+  .badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+  
+  .badge-primary {
+    @apply bg-pink-100 text-pink-800;
+  }
+  
+  .badge-success {
+    @apply bg-green-100 text-green-800;
+  }
+  
+  .badge-warning {
+    @apply bg-yellow-100 text-yellow-800;
+  }
+  
+  .badge-danger {
+    @apply bg-red-100 text-red-800;
+  }
+  
+  /* Inputs personalizados */
+  .input-primary {
+    @apply w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all;
+  }
+  
+  .input-error {
+    @apply border-red-500 focus:border-red-500 focus:ring-red-200;
+  }
+  
+  /* Botones personalizados */
+  .btn {
+    @apply px-6 py-3 rounded-lg font-medium transition-all duration-300 inline-flex items-center justify-center;
+  }
+  
+  .btn-primary {
+    @apply bg-gradient-to-r from-pink-500 to-orange-500 text-white hover:shadow-lg transform hover:scale-105;
+  }
+  
+  .btn-secondary {
+    @apply bg-gray-200 text-gray-800 hover:bg-gray-300;
+  }
+  
+  .btn-outline {
+    @apply border-2 border-pink-500 text-pink-500 hover:bg-pink-500 hover:text-white;
+  }
+  
+  /* Efectos de imagen */
+  .image-zoom {
+    @apply overflow-hidden;
+  }
+  
+  .image-zoom img {
+    @apply transition-transform duration-500 hover:scale-110;
+  }
+  
+  /* Parallax */
+  .parallax {
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+  
+  /* Skeleton loader */
+  .skeleton {
+    @apply bg-gray-200 rounded animate-pulse;
+  }
+  
+  /* Text truncate multiline */
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+
+/* Animaciones GSAP helpers */
+.gsap-fade-in {
+  opacity: 0;
+}
+
+.gsap-slide-up {
+  opacity: 0;
+  transform: translateY(50px);
+}
+
+.gsap-slide-left {
+  opacity: 0;
+  transform: translateX(-50px);
+}
+
+.gsap-slide-right {
+  opacity: 0;
+  transform: translateX(50px);
+}
+
+.gsap-scale-in {
+  opacity: 0;
+  transform: scale(0.8);
+}
+
+/* Print styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  .print-break {
+    page-break-after: always;
+  }
+}
+
+/* Dark mode support (opcional) */
+@media (prefers-color-scheme: dark) {
+  /* Puedes agregar estilos para modo oscuro aquí si lo deseas */
+}
+
+/* Responsive helpers */
+@layer utilities {
+  .container-narrow {
+    @apply max-w-4xl mx-auto px-4;
+  }
+  
+  .container-wide {
+    @apply max-w-7xl mx-auto px-4;
+  }
+  
+  /* Aspect ratios */
+  .aspect-1 {
+    aspect-ratio: 1 / 1;
+  }
+  
+  .aspect-4-3 {
+    aspect-ratio: 4 / 3;
+  }
+  
+  .aspect-16-9 {
+    aspect-ratio: 16 / 9;
+  }
+}

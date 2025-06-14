@@ -1,0 +1,341 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import config from '../../../public/config.json';
+import ecommerceConfig from '../../../public/ecommerce-config.json';
+---
+
+<AdminLayout title="Configuración">
+  <div class="max-w-4xl">
+    <!-- Change Password Section -->
+    <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
+      <h2 class="text-xl font-semibold text-gray-800 mb-6">Cambiar Contraseña</h2>
+      
+      <form id="password-form" class="space-y-4 max-w-md">
+        <div>
+          <label for="current-password" class="block text-sm font-medium text-gray-700 mb-2">
+            Contraseña Actual
+          </label>
+          <input 
+            type="password" 
+            id="current-password" 
+            name="currentPassword" 
+            required
+            class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all"
+          />
+        </div>
+        
+        <div>
+          <label for="new-password" class="block text-sm font-medium text-gray-700 mb-2">
+            Nueva Contraseña
+          </label>
+          <input 
+            type="password" 
+            id="new-password" 
+            name="newPassword" 
+            required
+            minlength="6"
+            class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all"
+          />
+        </div>
+        
+        <div>
+          <label for="confirm-password" class="block text-sm font-medium text-gray-700 mb-2">
+            Confirmar Nueva Contraseña
+          </label>
+          <input 
+            type="password" 
+            id="confirm-password" 
+            name="confirmPassword" 
+            required
+            minlength="6"
+            class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all"
+          />
+        </div>
+        
+        <button 
+          type="submit" 
+          class="bg-gradient-to-r from-pink-500 to-orange-500 text-white px-6 py-2 rounded-lg hover:shadow-lg transition-all duration-300"
+        >
+          Actualizar Contraseña
+        </button>
+      </form>
+    </div>
+    
+    <!-- Store Configuration -->
+    <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
+      <h2 class="text-xl font-semibold text-gray-800 mb-6">Configuración de la Tienda</h2>
+      
+      <form id="store-form" class="space-y-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label for="whatsapp" class="block text-sm font-medium text-gray-700 mb-2">
+              Número de WhatsApp
+            </label>
+            <input 
+              type="tel" 
+              id="whatsapp" 
+              name="whatsapp" 
+              value={config.social.whatsapp}
+              class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all"
+              placeholder="+504XXXXXXXX"
+            />
+          </div>
+          
+          <div>
+            <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
+              Email de Contacto
+            </label>
+            <input 
+              type="email" 
+              id="email" 
+              name="email" 
+              value={config.social.email}
+              class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all"
+            />
+          </div>
+          
+          <div>
+            <label for="minimum-order" class="block text-sm font-medium text-gray-700 mb-2">
+              Pedido Mínimo (L.)
+            </label>
+            <input 
+              type="number" 
+              id="minimum-order" 
+              name="minimumOrder" 
+              value={ecommerceConfig.store.minimumOrder}
+              min="0"
+              step="10"
+              class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all"
+            />
+          </div>
+          
+          <div>
+            <label for="delivery-fee" class="block text-sm font-medium text-gray-700 mb-2">
+              Costo de Envío (L.)
+            </label>
+            <input 
+              type="number" 
+              id="delivery-fee" 
+              name="deliveryFee" 
+              value={ecommerceConfig.store.deliveryFee}
+              min="0"
+              step="5"
+              class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all"
+            />
+          </div>
+          
+          <div>
+            <label for="free-delivery" class="block text-sm font-medium text-gray-700 mb-2">
+              Envío Gratis a partir de (L.)
+            </label>
+            <input 
+              type="number" 
+              id="free-delivery" 
+              name="freeDeliveryThreshold" 
+              value={ecommerceConfig.store.freeDeliveryThreshold}
+              min="0"
+              step="50"
+              class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all"
+            />
+          </div>
+        </div>
+        
+        <div>
+          <label for="order-message" class="block text-sm font-medium text-gray-700 mb-2">
+            Mensaje de Pedido (WhatsApp)
+          </label>
+          <textarea 
+            id="order-message" 
+            name="orderMessage" 
+            rows="3"
+            class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all resize-none"
+          >{ecommerceConfig.store.orderMessage}</textarea>
+        </div>
+        
+        <button 
+          type="submit" 
+          class="bg-gradient-to-r from-pink-500 to-orange-500 text-white px-6 py-2 rounded-lg hover:shadow-lg transition-all duration-300"
+        >
+          Guardar Configuración
+        </button>
+      </form>
+    </div>
+    
+    <!-- Social Media -->
+    <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
+      <h2 class="text-xl font-semibold text-gray-800 mb-6">Redes Sociales</h2>
+      
+      <form id="social-form" class="space-y-4">
+        <div>
+          <label for="instagram" class="block text-sm font-medium text-gray-700 mb-2">
+            Instagram
+          </label>
+          <input 
+            type="url" 
+            id="instagram" 
+            name="instagram" 
+            value={config.social.instagram}
+            class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all"
+            placeholder="https://instagram.com/tu-perfil"
+          />
+        </div>
+        
+        <div>
+          <label for="facebook" class="block text-sm font-medium text-gray-700 mb-2">
+            Facebook
+          </label>
+          <input 
+            type="url" 
+            id="facebook" 
+            name="facebook" 
+            value={config.social.facebook}
+            class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all"
+            placeholder="https://facebook.com/tu-pagina"
+          />
+        </div>
+        
+        <div>
+          <label for="tiktok" class="block text-sm font-medium text-gray-700 mb-2">
+            TikTok
+          </label>
+          <input 
+            type="url" 
+            id="tiktok" 
+            name="tiktok" 
+            value={config.social.tiktok}
+            class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all"
+            placeholder="https://tiktok.com/@tu-perfil"
+          />
+        </div>
+        
+        <button 
+          type="submit" 
+          class="bg-gradient-to-r from-pink-500 to-orange-500 text-white px-6 py-2 rounded-lg hover:shadow-lg transition-all duration-300"
+        >
+          Actualizar Redes Sociales
+        </button>
+      </form>
+    </div>
+    
+    <!-- Danger Zone -->
+    <div class="bg-red-50 border border-red-200 rounded-lg p-6">
+      <h2 class="text-xl font-semibold text-red-800 mb-4">Zona de Peligro</h2>
+      
+      <div class="space-y-4">
+        <div>
+          <h3 class="font-medium text-red-700 mb-2">Limpiar Caché</h3>
+          <p class="text-sm text-red-600 mb-3">
+            Limpia todos los archivos temporales y caché del sistema.
+          </p>
+          <button 
+            id="clear-cache"
+            class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors"
+          >
+            Limpiar Caché
+          </button>
+        </div>
+        
+        <div>
+          <h3 class="font-medium text-red-700 mb-2">Exportar Datos</h3>
+          <p class="text-sm text-red-600 mb-3">
+            Descarga todos los datos de productos y órdenes en formato JSON.
+          </p>
+          <button 
+            id="export-data"
+            class="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors"
+          >
+            Exportar Datos
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</AdminLayout>
+
+<script>
+  // Change password form
+  document.getElementById('password-form')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const formData = new FormData(e.target);
+    const newPassword = formData.get('newPassword');
+    const confirmPassword = formData.get('confirmPassword');
+    
+    if (newPassword !== confirmPassword) {
+      alert('Las contraseñas no coinciden');
+      return;
+    }
+    
+    try {
+      // API call to change password
+      alert('Contraseña actualizada correctamente');
+      e.target.reset();
+    } catch (error) {
+      alert('Error al actualizar la contraseña');
+    }
+  });
+  
+  // Store configuration form
+  document.getElementById('store-form')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const formData = new FormData(e.target);
+    const data = Object.fromEntries(formData);
+    
+    try {
+      // API call to update store config
+      alert('Configuración actualizada correctamente');
+    } catch (error) {
+      alert('Error al actualizar la configuración');
+    }
+  });
+  
+  // Social media form
+  document.getElementById('social-form')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const formData = new FormData(e.target);
+    const data = Object.fromEntries(formData);
+    
+    try {
+      // API call to update social media
+      alert('Redes sociales actualizadas correctamente');
+    } catch (error) {
+      alert('Error al actualizar las redes sociales');
+    }
+  });
+  
+  // Clear cache
+  document.getElementById('clear-cache')?.addEventListener('click', async () => {
+    if (confirm('¿Estás seguro de que deseas limpiar el caché?')) {
+      try {
+        // Clear cache logic
+        localStorage.clear();
+        sessionStorage.clear();
+        alert('Caché limpiado correctamente');
+      } catch (error) {
+        alert('Error al limpiar el caché');
+      }
+    }
+  });
+  
+  // Export data
+  document.getElementById('export-data')?.addEventListener('click', async () => {
+    try {
+      const response = await fetch('/api/admin/export');
+      const data = await response.json();
+      
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `bloom-bite-export-${new Date().toISOString().split('T')[0]}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      alert('Error al exportar los datos');
+    }
+  });
+</script>

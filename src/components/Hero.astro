@@ -1,0 +1,165 @@
+---
+import config from '../../public/config.json';
+const { hero, colors } = config;
+---
+
+<section id="hero" class="relative min-h-screen bg-white overflow-hidden">
+  <!-- Background Pattern -->
+  <div class="absolute inset-0">
+    <div class="absolute inset-0 bg-gradient-to-br from-orange-50 to-pink-50"></div>
+    <!-- Geometric shapes in background -->
+    <div class="absolute top-20 right-20 w-32 h-32 bg-pink-500 rounded-full opacity-10"></div>
+    <div class="absolute bottom-32 left-16 w-24 h-24 bg-orange-500 rounded-full opacity-10"></div>
+    <div class="absolute top-1/3 left-1/4 w-16 h-16 bg-pink-400 rounded-full opacity-5"></div>
+  </div>
+  
+  <!-- Hero Content -->
+  <div class="relative z-10 container mx-auto px-4 min-h-screen flex items-center">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center w-full">
+      <!-- Text Content -->
+      <div class="hero-content text-center lg:text-left">
+        <!-- Badge -->
+        <div class="inline-flex items-center bg-gradient-to-r from-pink-500 to-orange-500 text-white px-6 py-3 rounded-full text-sm font-bold mb-8 shadow-lg">
+          <span class="mr-2">🔥</span>
+          ¡NUEVO SABOR DISPONIBLE!
+        </div>
+        
+        <!-- Main Heading -->
+        <h1 class="text-5xl md:text-7xl font-black mb-6 leading-tight text-gray-900">
+          <span class="block text-6xl md:text-8xl bg-gradient-to-r from-pink-500 to-orange-500 bg-clip-text text-transparent">
+            Bloom & Bite
+          </span>
+          <span class="block text-3xl md:text-4xl font-bold text-gray-700 mt-2">
+            del horno a tu corazón
+          </span>
+        </h1>
+        
+        <!-- Description -->
+        <p class="text-xl text-gray-600 mb-10 max-w-lg mx-auto lg:mx-0 leading-relaxed">
+          Roles de canela artesanales con sabores únicos que despiertan emociones. 
+          <strong class="text-pink-600">Frescos, deliciosos y hechos con amor.</strong>
+        </p>
+        
+        <!-- CTA Buttons -->
+        <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-12">
+          <a 
+            href="/catalogo" 
+            class="bg-gradient-to-r from-pink-500 to-orange-500 text-white px-10 py-4 rounded-full font-black text-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300 text-center flex items-center justify-center gap-2"
+          >
+            VER CATÁLOGO
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+            </svg>
+          </a>
+          <a 
+            href="#products" 
+            class="border-3 border-pink-500 text-pink-500 px-10 py-4 rounded-full font-black text-lg hover:bg-pink-500 hover:text-white transition-all duration-300 text-center"
+          >
+            NUESTROS SABORES
+          </a>
+        </div>
+        
+        <!-- Social Proof -->
+        <div class="flex items-center justify-center lg:justify-start gap-6">
+          <div class="flex -space-x-2">
+            {[1,2,3,4,5].map(() => (
+              <div class="w-10 h-10 bg-gradient-to-br from-pink-400 to-orange-400 rounded-full border-2 border-white"></div>
+            ))}
+          </div>
+          <div class="text-left">
+            <div class="flex items-center gap-1 text-yellow-400 text-lg">
+              <span>⭐⭐⭐⭐⭐</span>
+            </div>
+            <p class="text-sm font-bold text-gray-700">+500 clientes felices</p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Product Hero Image -->
+      <div class="hero-image relative flex items-center justify-center">
+        <div class="relative">
+          <!-- Main Product Circle -->
+          <div class="w-96 h-96 bg-gradient-to-br from-amber-400 via-orange-500 to-amber-600 rounded-full shadow-2xl flex items-center justify-center relative overflow-hidden">
+            <!-- Logo in center -->
+            <img 
+              src="/logo.jpg" 
+              alt="Bloom & Bite Logo" 
+              class="w-80 h-80 object-contain rounded-full z-10"
+              draggable="false"
+            />
+            <!-- Overlay effect -->
+            <div class="absolute inset-0 bg-white opacity-10"></div>
+          </div>
+          
+          <!-- Floating badges around the main circle -->
+          <div class="absolute -top-6 -right-6 bg-white rounded-full p-4 shadow-xl animate-bounce">
+            <span class="text-2xl">🍯</span>
+          </div>
+          <div class="absolute -bottom-6 -left-6 bg-white rounded-full p-4 shadow-xl animate-bounce" style="animation-delay: 1s;">
+            <span class="text-2xl">✨</span>
+          </div>
+          <div class="absolute top-1/2 -right-12 bg-white rounded-full p-3 shadow-xl animate-bounce" style="animation-delay: 2s;">
+            <span class="text-xl">🌟</span>
+          </div>
+          <div class="absolute top-1/4 -left-8 bg-white rounded-full p-3 shadow-xl animate-bounce" style="animation-delay: 0.5s;">
+            <span class="text-xl">🤤</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Scroll indicator -->
+  <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+    <div class="w-6 h-10 border-2 border-gray-400 rounded-full flex justify-center">
+      <div class="w-1 h-3 bg-gray-400 rounded-full animate-pulse mt-2"></div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .border-3 {
+    border-width: 3px;
+  }
+  
+  @keyframes bounce {
+    0%, 20%, 53%, 80%, 100% {
+      transform: translate3d(0,0,0);
+    }
+    40%, 43% {
+      transform: translate3d(0,-30px,0);
+    }
+    70% {
+      transform: translate3d(0,-15px,0);
+    }
+    90% {
+      transform: translate3d(0,-4px,0);
+    }
+  }
+</style>
+
+<script>
+  import gsap from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+  
+  gsap.registerPlugin(ScrollTrigger);
+  
+  document.addEventListener('astro:page-load', () => {
+    // Hero content animation
+    const tl = gsap.timeline();
+    
+    tl.from('.hero-content > *', {
+      opacity: 0,
+      y: 30,
+      duration: 0.8,
+      stagger: 0.2,
+      ease: "power3.out"
+    })
+    .from('.hero-image', {
+      opacity: 0,
+      scale: 0.8,
+      duration: 1,
+      ease: "back.out(1.7)"
+    }, "-=0.5");
+  });
+</script>

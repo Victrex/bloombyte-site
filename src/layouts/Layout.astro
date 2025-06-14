@@ -1,0 +1,127 @@
+---
+import { ViewTransitions } from 'astro:transitions';
+import config from '../../public/config.json';
+import Cart from '../components/Cart.jsx';
+import CartButton from '../components/CartButton.jsx';
+
+export interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = config.brand.slogan } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content={description} />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title} | {config.brand.name}</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <ViewTransitions />
+  </head>  <body>
+    <slot />    <!-- Componentes del carrito con persistencia -->
+    <Cart client:only="react" transition:persist />
+    <CartButton client:only="react" transition:persist />    <script>
+      import gsap from 'gsap';
+      import { ScrollTrigger } from 'gsap/ScrollTrigger';
+      import { initializeCart } from '../stores/cartStore.js';
+      
+      gsap.registerPlugin(ScrollTrigger);
+      
+      // Inicializar animaciones globales y carrito
+      document.addEventListener('astro:page-load', () => {
+        // Reinicializar el carrito después de navegación
+        initializeCart();
+        
+        // Animación de fade in para elementos
+        gsap.utils.toArray('.fade-in').forEach((element) => {
+          gsap.fromTo(element as gsap.TweenTarget, 
+            { opacity: 0, y: 50 },
+            {
+              opacity: 1,
+              y: 0,
+              duration: 0.8,
+              scrollTrigger: {
+                trigger: element as gsap.DOMTarget,
+                start: 'top 80%',
+                end: 'bottom 20%',
+                toggleActions: 'play none none none'
+              }
+            }
+          );
+        });
+        
+        // Animación stagger para listas
+        gsap.utils.toArray('.stagger-container').forEach((container) => {
+          const items = (container as Element).querySelectorAll('.stagger-item');
+          gsap.fromTo(items,
+            { opacity: 0, y: 30 },
+            {
+              opacity: 1,
+              y: 0,
+              duration: 0.6,
+              stagger: 0.2,
+              scrollTrigger: {
+                trigger: container as gsap.DOMTarget,
+                start: 'top 80%'
+              }
+            }
+          );
+        });
+      });
+    </script>
+    
+    <style is:global>
+      html {
+        scroll-behavior: smooth;
+      }
+      
+      body {
+        font-family: 'Poppins', sans-serif;
+      }
+      
+      .font-brand {
+        font-family: 'Pacifico', cursive;
+      }
+      
+      /* Animaciones personalizadas */
+      @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-20px); }
+      }
+      
+      @keyframes pulse-glow {
+        0%, 100% { 
+          box-shadow: 0 0 20px rgba(255, 182, 193, 0.5);
+        }
+        50% { 
+          box-shadow: 0 0 40px rgba(255, 182, 193, 0.8);
+        }
+      }
+      
+      .animate-float {
+        animation: float 3s ease-in-out infinite;
+      }
+      
+      .animate-pulse-glow {
+        animation: pulse-glow 2s ease-in-out infinite;
+      }
+      
+      /* Scroll suave para View Transitions */
+      ::view-transition-old(root),
+      ::view-transition-new(root) {
+        animation-duration: 0.5s;
+      }
+    </style>
+  </body>
+</html>

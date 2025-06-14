@@ -1,16 +1,49 @@
 ---
-
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/Navbar.astro';
+import Hero from '../components/Hero.astro';
+import Products from '../components/Products.astro';
+import About from '../components/About.astro';
+import Services from '../components/Services.astro';
+import Contact from '../components/Contact.astro';
+import Footer from '../components/Footer.astro';
+import config from '../../public/config.json';
+import '../styles/global.css';
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Layout title="Inicio" description={config.brand.slogan}>
+  <Navbar />
+  <main>
+    <Hero />
+    <Products />
+    <About />
+    <Services />
+    <Contact />
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  /* Custom scrollbar */
+  :global(html) {
+    scrollbar-width: thin;
+    scrollbar-color: #ff69b4 #ffe4e1;
+  }
+  
+  :global(html::-webkit-scrollbar) {
+    width: 12px;
+  }
+  
+  :global(html::-webkit-scrollbar-track) {
+    background: #ffe4e1;
+  }
+  
+  :global(html::-webkit-scrollbar-thumb) {
+    background: linear-gradient(to bottom, #ff69b4, #ffa500);
+    border-radius: 6px;
+  }
+  
+  :global(html::-webkit-scrollbar-thumb:hover) {
+    background: linear-gradient(to bottom, #ff1493, #ff8c00);
+  }
+</style>

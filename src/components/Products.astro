@@ -1,0 +1,157 @@
+---
+import ProductCard from './ProductCard.astro';
+
+// Productos de ejemplo - estos vendrán de la base de datos
+const popularProducts = [
+  {
+    id: 1,
+    name: "Clásico Enrollado",
+    description: "El clásico rol de canela, suavecito, esponjoso y con ese sabor que nunca falla. ¡Una locura deliciosa!",
+    price: 80,
+    category: "normal",
+    image: "/public/images/products/clasico.png",
+    isPopular: true
+  },
+  {
+    id: 2,
+    name: "Choco Rol",
+    description: "Para los amantes del chocolate: relleno, cobertura y actitud chocolatosa. ¡Puro antojo!",
+    price: 85,
+    category: "normal",
+    image: "/public/images/products/choco.png",
+    isPopular: true
+  },
+  {
+    id: 3,
+    name: "Rol Fresita",
+    description: "Dulce, frutal y encantador. El sabor de fresa se siente como un besito en cada mordida.",
+    price: 90,
+    category: "fruta",
+    image: "/public/images/products/rol_fresita.png",
+    isPopular: true
+  },
+  {
+    id: 4,
+    name: "Saladito",
+    description: "Queso y jamón. Ideal para los que no son tan dulceros.",
+    price: 95,
+    category: "salado",
+    image: "/public/images/products/saladito.png",
+    isPopular: true
+  }
+];
+---
+
+<section id="products" class="py-20 bg-white">
+  <div class="container mx-auto px-4">
+    <!-- Section Header -->
+    <div class="text-center mb-16">
+      <div class="inline-block bg-gradient-to-r from-pink-500 to-orange-500 text-white px-6 py-2 rounded-full text-sm font-bold mb-6 uppercase tracking-wide">
+        NUESTROS PRODUCTOS
+      </div>
+      <h2 class="text-4xl md:text-6xl font-black text-gray-900 mb-6">
+        Sabores que
+        <span class="bg-gradient-to-r from-pink-500 to-orange-500 bg-clip-text text-transparent">
+          enamoran
+        </span>
+      </h2>
+      <p class="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+        Descubre nuestra selección de roles de canela artesanales, desde los clásicos hasta nuestras creaciones más innovadoras
+      </p>
+    </div>
+    <hr class="border-t-2 border-pink-200 mb-12" />
+    <!-- Category Tabs -->
+    <div class="flex justify-center mb-16">
+      <div class="inline-flex bg-gray-100 rounded-full p-2 shadow-lg">
+        <button class="category-tab active px-8 py-3 rounded-full font-black text-sm uppercase tracking-wide transition-all duration-300" data-category="todos">
+          TODOS
+        </button>
+        <button class="category-tab px-8 py-3 rounded-full font-black text-sm uppercase tracking-wide transition-all duration-300" data-category="normal">
+          CLÁSICOS
+        </button>
+        <button class="category-tab px-8 py-3 rounded-full font-black text-sm uppercase tracking-wide transition-all duration-300" data-category="fruta">
+          FRUTALES
+        </button>
+        <button class="category-tab px-8 py-3 rounded-full font-black text-sm uppercase tracking-wide transition-all duration-300" data-category="salado">
+          SALADOS
+        </button>
+      </div>
+    </div>
+    
+    <!-- Products Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 mb-16">
+      {popularProducts.map((product) => (
+        <div class="product-item" data-category={product.category}>
+          <ProductCard product={product} />
+        </div>
+      ))}
+    </div>
+    
+    <!-- CTA -->
+    <div class="text-center">
+      <a 
+        href="/catalogo" 
+        class="inline-flex items-center gap-3 bg-gradient-to-r from-pink-500 to-orange-500 text-white px-12 py-5 rounded-full font-black text-xl uppercase tracking-wide hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
+      >
+        VER CATÁLOGO COMPLETO
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+        </svg>
+      </a>
+    </div>
+  </div>
+  
+  <!-- Background Elements -->
+  <div class="absolute top-20 right-10 w-20 h-20 bg-pink-200 rounded-full opacity-20"></div>
+  <div class="absolute bottom-20 left-10 w-16 h-16 bg-orange-200 rounded-full opacity-20"></div>
+</section>
+
+<style>
+  .category-tab {
+    @apply text-gray-600 hover:text-pink-500;
+  }
+  
+  .category-tab.active {
+    @apply bg-gradient-to-r from-pink-500 to-orange-500 text-white shadow-lg;
+  }
+  
+  .product-item {
+    transition: all 0.3s ease;
+    opacity: 1;
+    transform: scale(1);
+  }
+  
+  .product-item.hidden {
+    opacity: 0;
+    transform: scale(0.8);
+    pointer-events: none;
+  }
+</style>
+
+<script>
+  document.addEventListener('astro:page-load', () => {
+    const tabs = document.querySelectorAll('.category-tab');
+    const products = document.querySelectorAll('.product-item');
+    
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        // Update active tab
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        
+        // Filter products with animation
+        const category = tab.getAttribute('data-category');
+        
+        products.forEach((product, index) => {
+          if (category === 'todos' || product.getAttribute('data-category') === category) {
+            setTimeout(() => {
+              product.classList.remove('hidden');
+            }, index * 100);
+          } else {
+            product.classList.add('hidden');
+          }
+        });
+      });
+    });
+  });
+</script>
