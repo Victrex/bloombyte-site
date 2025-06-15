@@ -31,16 +31,25 @@ export async function POST({ request }) {
         headers: { 'Content-Type': 'application/json' }
       });
     }
+        const uploadDir = process.env.NODE_ENV === 'production'
+      ? '/root/public_html/dist/client/images/products'
+      : path.join(process.cwd(), 'public/images/products');
+    
+    // Crear directorio si no existe
+    await mkdir(uploadDir, { recursive: true });
+    
+    // Guardar archivo
     
     // Generar nombre único para el archivo
     const extension = file.name.split('.').pop();
     const fileName = `${randomUUID()}.${extension}`;
-    const filePath = join(process.cwd(), 'public', 'images', 'products', fileName);
+    const filepath = path.join(uploadDir, fileName);
+    // const filePath = join(process.cwd(), 'public', 'images', 'products', fileName);
     
     // Guardar archivo
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
-    await writeFile(filePath, buffer);
+    await writeFile(filepath, buffer);
     
     // Retornar URL de la imagen
     const imageUrl = `/images/products/${fileName}`;
