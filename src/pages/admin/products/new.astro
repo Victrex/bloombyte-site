@@ -115,25 +115,34 @@ const { categories } = ecommerceConfig;
             <p class="text-xs text-gray-500 mt-1">Los productos populares aparecen destacados en la página principal</p>
           </div>
         </div>
-        
-        <!-- Image Upload -->
+          <!-- Image Upload -->
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-2">
             Imagen del Producto
           </label>
-          <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-pink-500 transition-colors">
-            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
-            </svg>
-            <p class="mt-2 text-sm text-gray-600">
-              <label for="image" class="cursor-pointer text-blue-600 hover:text-blue-800">
-                Sube una imagen
-              </label>
-              o arrastra y suelta
-            </p>
-            <input type="file" id="image" name="image" accept="image/*" class="hidden" />
-            <div id="image-preview" class="mt-4"></div>
-            <p class="text-xs text-gray-500 mt-1">PNG, JPG hasta 5MB</p>
+          <div class="flex items-start gap-4">
+            <!-- Preview Area -->
+            <div id="image-preview" class="w-32 h-32 bg-gray-100 rounded-lg overflow-hidden flex items-center justify-center border-2 border-dashed border-gray-300">
+              <span class="text-gray-400 text-xs text-center">Sin imagen</span>
+            </div>
+            
+            <!-- Upload Area -->
+            <div class="flex-1">
+              <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-pink-500 transition-colors">
+                <svg class="mx-auto h-8 w-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                </svg>
+                <p class="mt-2 text-sm text-gray-600">
+                  <label for="image" class="cursor-pointer text-blue-600 hover:text-blue-800 font-medium">
+                    Seleccionar imagen
+                  </label>
+                  o arrastra y suelta
+                </p>
+                <input type="file" id="image" name="image" accept="image/*" class="hidden" />
+                <p class="text-xs text-gray-500 mt-1">PNG, JPG hasta 5MB</p>
+                <div id="upload-status" class="mt-2 text-xs"></div>
+              </div>
+            </div>
           </div>
         </div>
         
@@ -156,14 +165,94 @@ const { categories } = ecommerceConfig;
     </div>
   </div>
 </AdminLayout>
+
 <script>
   const form = document.getElementById('product-form') as HTMLFormElement | null;
+  const imageInput = document.getElementById('image') as HTMLInputElement | null;
+  const imagePreview = document.getElementById('image-preview') as HTMLElement | null;
+  const uploadStatus = document.getElementById('upload-status') as HTMLElement | null;
   
+  // Image preview functionality
+  function updateImagePreview(file: File | null) {
+    if (!imagePreview) return;
+    
+    if (file) {
+      // Validar tamaño del archivo (5MB max)
+      if (file.size > 5 * 1024 * 1024) {
+        if (uploadStatus) {
+          uploadStatus.innerHTML = '<span class="text-red-500">Archivo muy grande. Máximo 5MB.</span>';
+        }
+        return;
+      }
+      
+      // Validar tipo de archivo
+      if (!file.type.startsWith('image/')) {
+        if (uploadStatus) {
+          uploadStatus.innerHTML = '<span class="text-red-500">Solo se permiten archivos de imagen.</span>';
+        }
+        return;
+      }
+      
+      // Mostrar vista previa
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        if (e.target?.result && imagePreview) {
+          imagePreview.innerHTML = `<img src="${e.target.result}" alt="Vista previa" class="w-full h-full object-cover" />`;
+        }
+      };
+      reader.readAsDataURL(file);
+      
+      if (uploadStatus) {
+        uploadStatus.innerHTML = '<span class="text-green-500">✓ Imagen cargada</span>';
+      }
+    } else {
+      // Limpiar vista previa
+      imagePreview.innerHTML = '<span class="text-gray-400 text-xs text-center">Sin imagen</span>';
+      if (uploadStatus) {
+        uploadStatus.innerHTML = '';
+      }
+    }
+  }
+  
+  // Event listener para selección de archivo
+  imageInput?.addEventListener('change', (e) => {
+    const target = e.target as HTMLInputElement;
+    const file = target.files?.[0] || null;
+    updateImagePreview(file);
+  });
+  
+  // Drag and drop functionality
+  const uploadArea = imageInput?.closest('.border-dashed');
+  
+  if (uploadArea) {
+    uploadArea.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      uploadArea.classList.add('border-pink-500', 'bg-pink-50');
+    });
+    
+    uploadArea.addEventListener('dragleave', (e) => {
+      e.preventDefault();
+      uploadArea.classList.remove('border-pink-500', 'bg-pink-50');
+    });
+      uploadArea.addEventListener('drop', (e) => {
+      e.preventDefault();
+      uploadArea.classList.remove('border-pink-500', 'bg-pink-50');
+      
+      const dragEvent = e as DragEvent;
+      const files = dragEvent.dataTransfer?.files;
+      if (files && files.length > 0 && imageInput) {
+        imageInput.files = files;
+        updateImagePreview(files[0]);
+      }
+    });
+  }
+  
+  // Form submission
   form?.addEventListener('submit', async (e) => {
     e.preventDefault();
     
-    const formData = new FormData(form as HTMLFormElement);
-    // No crear productData, enviar formData directamente para soportar archivos
+    const formData = new FormData(form);
+    
     try {
       const response = await fetch('/api/admin/products', {
         method: 'POST',
@@ -182,32 +271,4 @@ const { categories } = ecommerceConfig;
       alert('Error al crear el producto');
     }
   });
-  
-  // Image preview
-  const imageInput = document.getElementById('image');
-  const imagePreview = document.getElementById('image-preview');
-  imageInput?.addEventListener('change', (e) => {
-    const target = e.target as HTMLInputElement;
-    if (target && target.files && target.files[0]) {
-      const file = target.files[0];
-      const reader = new FileReader();
-      reader.onload = function(ev) {
-        if (ev.target && ev.target.result) {
-          if (imagePreview) {
-            imagePreview.innerHTML = `<img src="${ev.target.result}" alt="Vista previa" class="mx-auto rounded-lg max-h-40" />`;
-          }
-        } else {
-          if (imagePreview) {
-            imagePreview.innerHTML = '';
-          }
-        }
-      };
-      reader.readAsDataURL(file);
-    } else {
-      if (imagePreview) {
-        imagePreview.innerHTML = '';
-      }
-    }
-  });
-</script>
 </script>
