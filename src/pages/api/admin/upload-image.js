@@ -1,4 +1,4 @@
-import { writeFile } from 'fs/promises';
+import { writeFile, mkdir } from 'fs/promises';
 import { join } from 'path';
 import { randomUUID } from 'crypto';
 
@@ -31,20 +31,19 @@ export async function POST({ request }) {
         headers: { 'Content-Type': 'application/json' }
       });
     }
-        const uploadDir = process.env.NODE_ENV === 'production'
-      ? '/root/public_html/dist/client/images/products'
-      : path.join(process.cwd(), 'public/images/products');
+    
+    // CORREGIDO: Definir la ruta correcta según el entorno
+    const uploadDir = process.env.NODE_ENV === 'production'
+      ? '/root/public_html/dist/client/images/products'  // Ruta corregida
+      : join(process.cwd(), 'public', 'images', 'products');
     
     // Crear directorio si no existe
     await mkdir(uploadDir, { recursive: true });
     
-    // Guardar archivo
-    
     // Generar nombre único para el archivo
     const extension = file.name.split('.').pop();
     const fileName = `${randomUUID()}.${extension}`;
-    const filepath = path.join(uploadDir, fileName);
-    // const filePath = join(process.cwd(), 'public', 'images', 'products', fileName);
+    const filepath = join(uploadDir, fileName);  // CORREGIDO: Usar join importado
     
     // Guardar archivo
     const bytes = await file.arrayBuffer();
@@ -65,7 +64,10 @@ export async function POST({ request }) {
     
   } catch (error) {
     console.error('Error uploading image:', error);
-    return new Response(JSON.stringify({ error: 'Error interno del servidor' }), {
+    return new Response(JSON.stringify({ 
+      error: 'Error interno del servidor',
+      details: error.message  // Para debugging
+    }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' }
     });
