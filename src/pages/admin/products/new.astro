@@ -132,6 +132,7 @@ const { categories } = ecommerceConfig;
               o arrastra y suelta
             </p>
             <input type="file" id="image" name="image" accept="image/*" class="hidden" />
+            <div id="image-preview" class="mt-4"></div>
             <p class="text-xs text-gray-500 mt-1">PNG, JPG hasta 5MB</p>
           </div>
         </div>
@@ -155,30 +156,18 @@ const { categories } = ecommerceConfig;
     </div>
   </div>
 </AdminLayout>
-
 <script>
-  const form = document.getElementById('product-form');
+  const form = document.getElementById('product-form') as HTMLFormElement | null;
   
   form?.addEventListener('submit', async (e) => {
     e.preventDefault();
     
-    const formData = new FormData(form);
-    const productData = {
-      name: formData.get('name'),
-      description: formData.get('description'),
-      price: parseFloat(formData.get('price')),
-      category: formData.get('category'),
-      is_popular: formData.get('is_popular') === '1',
-      image_url: '/images/product-placeholder.jpg' // Por ahora placeholder
-    };
-    
+    const formData = new FormData(form as HTMLFormElement);
+    // No crear productData, enviar formData directamente para soportar archivos
     try {
       const response = await fetch('/api/admin/products', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(productData),
+        body: formData,
       });
       
       if (response.ok) {
@@ -196,11 +185,29 @@ const { categories } = ecommerceConfig;
   
   // Image preview
   const imageInput = document.getElementById('image');
+  const imagePreview = document.getElementById('image-preview');
   imageInput?.addEventListener('change', (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      // Aquí podrías agregar preview de la imagen
-      console.log('Imagen seleccionada:', file.name);
+    const target = e.target as HTMLInputElement;
+    if (target && target.files && target.files[0]) {
+      const file = target.files[0];
+      const reader = new FileReader();
+      reader.onload = function(ev) {
+        if (ev.target && ev.target.result) {
+          if (imagePreview) {
+            imagePreview.innerHTML = `<img src="${ev.target.result}" alt="Vista previa" class="mx-auto rounded-lg max-h-40" />`;
+          }
+        } else {
+          if (imagePreview) {
+            imagePreview.innerHTML = '';
+          }
+        }
+      };
+      reader.readAsDataURL(file);
+    } else {
+      if (imagePreview) {
+        imagePreview.innerHTML = '';
+      }
     }
   });
+</script>
 </script>
