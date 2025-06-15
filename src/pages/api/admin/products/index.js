@@ -38,32 +38,52 @@ export async function POST({ request }) {
     // Manejar FormData para archivos
     const formData = await request.formData();
     const productData = {};
-    
-    // Extraer datos del formulario
-    for (const [key, value] of formData.entries()) {      if (key === 'image' && value instanceof File && value.size > 0) {
-        // Manejar archivo de imagen
+      // Extraer datos del formulario
+    for (const [key, value] of formData.entries()) {
+      if (key === 'image' && value instanceof File && value.size > 0) {
+        // Manejar archivo de imagen directamente sin llamada fetch
         console.log('Processing image file:', { name: value.name, size: value.size, type: value.type });
         try {
-          // Crear FormData para la imagen
-          const imageFormData = new FormData();
-          imageFormData.append('image', value);
-            // Llamar al endpoint de upload
-          const uploadUrl = process.env.NODE_ENV === 'production' 
-            ? 'https://bloombyte.vasweb.io/api/admin/upload-image'
-            : 'http://localhost:4321/api/admin/upload-image';
-            
-          const uploadResponse = await fetch(uploadUrl, {
-            method: 'POST',
-            body: imageFormData
-          });
+          // Importar las funciones necesarias para el upload
+          const { writeFile, mkdir } = await import('fs/promises');
+          const { join } = await import('path');
+          const { randomUUID } = await import('crypto');
           
-          if (uploadResponse.ok) {
-            const uploadResult = await uploadResponse.json();
-            console.log('Image uploaded successfully:', uploadResult);
-            productData.image_url = uploadResult.imageUrl;
-          } else {            const errorText = await uploadResponse.text();
-            console.error('Error uploading image:', errorText);
+          // Validar tipo de archivo
+          const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+          if (!allowedTypes.includes(value.type)) {
+            console.error('Invalid file type:', value.type);
+            continue;
           }
+          
+          // Validar tamaño (5MB máximo)
+          const maxSize = 5 * 1024 * 1024; // 5MB
+          if (value.size > maxSize) {
+            console.error('File too large:', value.size);
+            continue;
+          }
+          
+          // Definir la ruta correcta según el entorno
+          const uploadDir = process.env.NODE_ENV === 'production'
+            ? '/root/public_html/dist/client/images/products'
+            : join(process.cwd(), 'public', 'images', 'products');
+          
+          // Crear directorio si no existe
+          await mkdir(uploadDir, { recursive: true });
+          
+          // Generar nombre único para el archivo
+          const extension = value.name.split('.').pop();
+          const fileName = `${randomUUID()}.${extension}`;
+          const filepath = join(uploadDir, fileName);
+          
+          // Guardar archivo
+          const bytes = await value.arrayBuffer();
+          const buffer = Buffer.from(bytes);
+          await writeFile(filepath, buffer);
+          
+          console.log('Image saved successfully:', filepath);
+          productData.image_url = `/images/products/${fileName}`;
+          
         } catch (uploadError) {
           console.error('Upload error:', uploadError);
         }
