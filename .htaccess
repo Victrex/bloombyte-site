@@ -1,5 +1,9 @@
 RewriteEngine On
 
+# Configuración para uploads
+LimitRequestBody 2097152
+# 2MB limit
+
 # Redirigir todo el tráfico a Node.js
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d

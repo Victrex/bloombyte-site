@@ -172,48 +172,144 @@ const { categories } = ecommerceConfig;
   const imagePreview = document.getElementById('image-preview') as HTMLElement | null;
   const uploadStatus = document.getElementById('upload-status') as HTMLElement | null;
   
-  // Image preview functionality
-  function updateImagePreview(file: File | null) {
+  let selectedFile: File | null = null;
+
+  // Función para mostrar alertas
+  function showAlert(message: string, type: 'error' | 'success' | 'info' = 'info') {
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg transition-all duration-300 ${
+      type === 'error' ? 'bg-red-500 text-white' :
+      type === 'success' ? 'bg-green-500 text-white' :
+      'bg-blue-500 text-white'
+    }`;
+    alertDiv.textContent = message;
+    document.body.appendChild(alertDiv);
+    
+    setTimeout(() => {
+      if (alertDiv.parentNode) {
+        alertDiv.parentNode.removeChild(alertDiv);
+      }
+    }, 3000);
+  }
+
+  // Función para validar archivo
+  function validateFile(file: File): boolean {
+    const maxSize = 1 * 1024 * 1024; // 1MB máximo
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+    
+    if (!allowedTypes.includes(file.type)) {
+      showAlert('Solo se permiten archivos JPEG, PNG o WebP', 'error');
+      return false;
+    }
+    
+    if (file.size > maxSize) {
+      showAlert(`Archivo muy grande. Máximo: ${(maxSize / 1024 / 1024).toFixed(1)}MB`, 'error');
+      return false;
+    }
+    
+    return true;
+  }
+
+  // Función para comprimir imagen
+  async function compressImage(file: File): Promise<Blob> {
+    return new Promise((resolve) => {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      const img = new Image();
+      
+      img.onload = () => {
+        // Redimensionar manteniendo proporción
+        const maxWidth = 600;
+        const maxHeight = 400;
+        let { width, height } = img;
+        
+        if (width > height) {
+          if (width > maxWidth) {
+            height = (height * maxWidth) / width;
+            width = maxWidth;
+          }
+        } else {
+          if (height > maxHeight) {
+            width = (width * maxHeight) / height;
+            height = maxHeight;
+          }
+        }
+        
+        canvas.width = width;
+        canvas.height = height;
+        
+        if (ctx) {
+          ctx.drawImage(img, 0, 0, width, height);
+          
+          // Convertir con calidad reducida
+          canvas.toBlob((blob) => {
+            if (blob) resolve(blob);
+          }, 'image/jpeg', 0.7);
+        }
+      };
+      
+      img.src = URL.createObjectURL(file);
+    });
+  }
+  
+  // Image preview functionality mejorada
+  async function updateImagePreview(file: File | null) {
     if (!imagePreview) return;
     
     if (file) {
-      // Validar tamaño del archivo (5MB max)
-      if (file.size > 5 * 1024 * 1024) {
+      if (!validateFile(file)) {
+        if (imageInput) imageInput.value = '';
+        selectedFile = null;
+        imagePreview.innerHTML = '<span class="text-gray-400 text-xs text-center">Sin imagen</span>';
         if (uploadStatus) {
-          uploadStatus.innerHTML = '<span class="text-red-500">Archivo muy grande. Máximo 5MB.</span>';
+          uploadStatus.innerHTML = '';
         }
         return;
       }
       
-      // Validar tipo de archivo
-      if (!file.type.startsWith('image/')) {
+      try {
         if (uploadStatus) {
-          uploadStatus.innerHTML = '<span class="text-red-500">Solo se permiten archivos de imagen.</span>';
+          uploadStatus.innerHTML = '<span class="text-blue-500">Procesando imagen...</span>';
         }
-        return;
-      }
-      
-      // Mostrar vista previa
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        if (e.target?.result && imagePreview) {
-          imagePreview.innerHTML = `<img src="${e.target.result}" alt="Vista previa" class="w-full h-full object-cover" />`;
+        
+        // Comprimir imagen
+        const compressedBlob = await compressImage(file);
+        selectedFile = new File([compressedBlob], file.name.replace(/\.[^/.]+$/, '.jpg'), { 
+          type: 'image/jpeg' 
+        });
+        
+        // Mostrar vista previa
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          if (e.target?.result && imagePreview) {
+            imagePreview.innerHTML = `<img src="${e.target.result}" alt="Vista previa" class="w-full h-full object-cover" />`;
+          }
+        };
+        reader.readAsDataURL(selectedFile);
+          if (uploadStatus) {
+          uploadStatus.innerHTML = `<span class="text-green-500">✓ Imagen optimizada (${(selectedFile.size / 1024).toFixed(0)}KB)</span>`;
         }
-      };
-      reader.readAsDataURL(file);
-      
-      if (uploadStatus) {
-        uploadStatus.innerHTML = '<span class="text-green-500">✓ Imagen cargada</span>';
+        
+        showAlert('Imagen procesada correctamente', 'success');
+      } catch (error) {
+        console.error('Error processing image:', error);
+        showAlert('Error al procesar la imagen', 'error');
+        if (imageInput) imageInput.value = '';
+        selectedFile = null;
+        imagePreview.innerHTML = '<span class="text-gray-400 text-xs text-center">Sin imagen</span>';
+        if (uploadStatus) {
+          uploadStatus.innerHTML = '';
+        }
       }
     } else {
       // Limpiar vista previa
+      selectedFile = null;
       imagePreview.innerHTML = '<span class="text-gray-400 text-xs text-center">Sin imagen</span>';
       if (uploadStatus) {
         uploadStatus.innerHTML = '';
       }
     }
-  }
-  
+  }  
   // Event listener para selección de archivo
   imageInput?.addEventListener('change', (e) => {
     const target = e.target as HTMLInputElement;
@@ -234,7 +330,8 @@ const { categories } = ecommerceConfig;
       e.preventDefault();
       uploadArea.classList.remove('border-pink-500', 'bg-pink-50');
     });
-      uploadArea.addEventListener('drop', (e) => {
+    
+    uploadArea.addEventListener('drop', (e) => {
       e.preventDefault();
       uploadArea.classList.remove('border-pink-500', 'bg-pink-50');
       
@@ -247,28 +344,52 @@ const { categories } = ecommerceConfig;
     });
   }
   
-  // Form submission
+  // Form submission mejorado
   form?.addEventListener('submit', async (e) => {
     e.preventDefault();
     
     const formData = new FormData(form);
+    const submitBtn = document.querySelector('#product-form button[type="submit"]') as HTMLButtonElement;
+    
+    // Agregar archivo comprimido si existe
+    if (selectedFile) {
+      formData.set('image', selectedFile);
+    }
+    
+    // Deshabilitar botón y mostrar loading
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Creando producto...';
+    }
     
     try {
       const response = await fetch('/api/admin/products', {
         method: 'POST',
-        body: formData,
+        body: formData
       });
       
-      if (response.ok) {
-        alert('Producto creado exitosamente');
-        window.location.href = '/admin/products';
+      const result = await response.json();
+      
+      if (response.ok && result.success) {
+        showAlert('Producto creado exitosamente', 'success');
+        // Redirect después de un breve delay
+        setTimeout(() => {
+          window.location.href = '/admin/products';
+        }, 1000);
       } else {
-        const error = await response.json();
-        alert('Error al crear el producto: ' + (error.message || 'Error desconocido'));
+        const errorMessage = result.error || `Error ${response.status}: ${response.statusText}`;
+        showAlert(errorMessage, 'error');
+        console.error('Error creating product:', result);
       }
     } catch (error) {
-      console.error('Error:', error);
-      alert('Error al crear el producto');
+      console.error('Network error:', error);
+      showAlert('Error de conexión. Por favor, intenta de nuevo.', 'error');
+    } finally {
+      // Rehabilitar botón
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Crear Producto';
+      }
     }
   });
 </script>
