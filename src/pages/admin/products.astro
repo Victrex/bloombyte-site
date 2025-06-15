@@ -170,61 +170,107 @@ const categoryNames: { [key: string]: string } = {
 </style>
 
 <script>
-  let productToDelete = null;
+  let productToDelete: string | null = null;
   
-  // Delete functionality
-  document.querySelectorAll('.delete-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      const productId = btn.getAttribute('data-product-id');
-      const productName = btn.getAttribute('data-product-name');
-      
-      productToDelete = productId;
-      document.getElementById('product-name').textContent = productName;
-      document.getElementById('delete-modal').classList.remove('hidden');
-    });
-  });
-  
-  // Cancel delete
-  document.getElementById('cancel-delete')?.addEventListener('click', () => {
-    document.getElementById('delete-modal').classList.add('hidden');
-    productToDelete = null;
-  });
-  
-  // Confirm delete
-  document.getElementById('confirm-delete')?.addEventListener('click', async () => {
-    if (!productToDelete) return;
+  // Initialize delete functionality
+  function initializeDeleteButtons() {
+    console.log('Initializing delete buttons...');
     
-    try {
-      const response = await fetch(`/api/admin/products/${productToDelete}`, {
-        method: 'DELETE'
-      });
-      
-      if (response.ok) {
-        // Remove row from table
-        document.querySelector(`tr[data-product-id="${productToDelete}"]`)?.remove();
-        document.getElementById('delete-modal').classList.add('hidden');
+    // Remove any existing listeners to avoid duplicates
+    document.querySelectorAll('.delete-btn').forEach(btn => {
+      btn.replaceWith(btn.cloneNode(true));
+    });
+    
+    // Add event listeners to delete buttons
+    document.querySelectorAll('.delete-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const productId = btn.getAttribute('data-product-id');
+        const productName = btn.getAttribute('data-product-name');
         
-        // Show success message
-        alert('Producto eliminado correctamente');
-        
-        // Reload if no products left
-        if (document.querySelectorAll('.product-row').length === 0) {
-          window.location.reload();
+        productToDelete = productId;
+        const productNameElement = document.getElementById('product-name');
+        if (productNameElement) {
+          productNameElement.textContent = productName || '';
         }
-      } else {
-        alert('Error al eliminar el producto');
-      }
-    } catch (error) {
-      console.error('Error:', error);
-      alert('Error al eliminar el producto');
-    }
-  });
+        document.getElementById('delete-modal')?.classList.remove('hidden');
+      });
+    });
+  }
   
-  // Close modal on outside click
-  document.getElementById('delete-modal')?.addEventListener('click', (e) => {
-    if (e.target.id === 'delete-modal') {
-      document.getElementById('delete-modal').classList.add('hidden');
-      productToDelete = null;
+  // Initialize modal functionality
+  function initializeModal() {
+    // Cancel delete
+    const cancelBtn = document.getElementById('cancel-delete');
+    if (cancelBtn) {
+      cancelBtn.addEventListener('click', () => {
+        document.getElementById('delete-modal')?.classList.add('hidden');
+        productToDelete = null;
+      });
     }
-  });
+    
+    // Confirm delete
+    const confirmBtn = document.getElementById('confirm-delete');
+    if (confirmBtn) {
+      confirmBtn.addEventListener('click', async () => {
+        if (!productToDelete) return;
+        
+        try {
+          const response = await fetch(`/api/admin/products/${productToDelete}`, {
+            method: 'DELETE'
+          });
+          
+          if (response.ok) {
+            // Remove row from table
+            const rowToRemove = document.querySelector(`tr[data-product-id="${productToDelete}"]`);
+            if (rowToRemove) {
+              rowToRemove.remove();
+            }
+            document.getElementById('delete-modal')?.classList.add('hidden');
+            
+            // Show success message
+            alert('Producto eliminado correctamente');
+            
+            // Reload if no products left
+            if (document.querySelectorAll('.product-row').length === 0) {
+              window.location.reload();
+            }
+          } else {
+            alert('Error al eliminar el producto');
+          }
+        } catch (error) {
+          console.error('Error:', error);
+          alert('Error al eliminar el producto');
+        }
+        
+        productToDelete = null;
+      });
+    }
+    
+    // Close modal on outside click
+    const modal = document.getElementById('delete-modal');
+    if (modal) {
+      modal.addEventListener('click', (e) => {
+        if (e.target && (e.target as HTMLElement).id === 'delete-modal') {
+          modal.classList.add('hidden');
+          productToDelete = null;
+        }
+      });
+    }
+  }
+  
+  // Initialize everything when page loads
+  function initialize() {
+    initializeDeleteButtons();
+    initializeModal();
+  }
+  
+  // Initialize on page load
+  document.addEventListener('DOMContentLoaded', initialize);
+  
+  // Re-initialize after view transitions (Astro's navigation)
+  document.addEventListener('astro:page-load', initialize);
+  
+  // Also handle manual navigation
+  document.addEventListener('astro:after-swap', initialize);
 </script>
