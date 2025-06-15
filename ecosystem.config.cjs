@@ -22,10 +22,10 @@ module.exports = {
 
   deploy: {
     production: {
-      user: 'usuario',
+      user: 'Victrex',
       host: 'bloomybite.store',
       ref: 'origin/main',
-      repo: 'git@github.com:tu-usuario/bloom-bite.git',
+      repo: 'git@github.com:victrex/bloom-bite.git',
       path: '/home/usuario/public_html',
       'pre-deploy-local': '',
       'post-deploy': 'npm install && npm run build && pm2 reload ecosystem.config.js --env production',
