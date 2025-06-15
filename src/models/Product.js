@@ -112,17 +112,28 @@ export class Product {
       return FALLBACK_PRODUCTS.filter(p => p.category === category);
     }
   }
-  
-  static async create(productData) {
-    const db = await getConnection();
-    const { name, description, price, category, image_url, is_popular } = productData;
-    
-    const [result] = await db.execute(
-      'INSERT INTO products (name, description, price, category, image_url, is_popular) VALUES (?, ?, ?, ?, ?, ?)',
-      [name, description, price, category, image_url, is_popular || false]
-    );
-    
-    return { id: result.insertId, ...productData };
+    static async create(productData) {
+    try {
+      const db = await getConnection();
+      const { name, description, price, category, image_url, is_popular } = productData;
+      
+      console.log('Attempting to create product with data:', { 
+        name, description, price, category, image_url, is_popular 
+      });
+      
+      const [result] = await db.execute(
+        'INSERT INTO products (name, description, price, category, image_url, is_popular) VALUES (?, ?, ?, ?, ?, ?)',
+        [name, description, price, category, image_url || null, is_popular || false]
+      );
+      
+      const createdProduct = { id: result.insertId, ...productData };
+      console.log('Product created successfully:', createdProduct);
+      
+      return createdProduct;
+    } catch (error) {
+      console.error('Error creating product:', error);
+      throw new Error(`Failed to create product: ${error.message}`);
+    }
   }
   
   static async update(id, productData) {
