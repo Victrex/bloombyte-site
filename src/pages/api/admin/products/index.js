@@ -28,17 +28,16 @@ export async function GET({ request }) {
 }
 
 export async function POST({ request }) {
-  try {
-    // Verificar tamaño de request antes de procesarlo
+  try {    // Verificar tamaño de request antes de procesarlo
     const contentLength = request.headers.get('content-length');
-    const maxSize = 2 * 1024 * 1024; // 2MB
+    const maxSize = 50 * 1024 * 1024; // 50MB
     
     if (contentLength && parseInt(contentLength) > maxSize) {
       console.log(`Request too large: ${contentLength} bytes`);
       return new Response(
         JSON.stringify({ 
           success: false, 
-          error: 'Archivo demasiado grande. Máximo 2MB permitido.' 
+          error: 'Archivo demasiado grande. Máximo 50MB permitido.' 
         }), 
         { 
           status: 413,
@@ -62,7 +61,7 @@ export async function POST({ request }) {
           return new Response(
             JSON.stringify({ 
               success: false, 
-              error: 'La imagen es demasiado grande. Máximo 2MB.' 
+              error: 'La imagen es demasiado grande. Máximo 50MB.' 
             }), 
             { status: 413, headers: { 'Content-Type': 'application/json' } }
           );
@@ -157,7 +156,7 @@ export async function POST({ request }) {
       return new Response(
         JSON.stringify({ 
           success: false, 
-          error: 'El archivo es demasiado grande. Por favor, usa una imagen más pequeña (máximo 2MB).' 
+          error: 'El archivo es demasiado grande. Por favor, usa una imagen más pequeña (máximo 50MB).' 
         }), 
         { 
           status: 413,

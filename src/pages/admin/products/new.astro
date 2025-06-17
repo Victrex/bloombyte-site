@@ -139,7 +139,7 @@ const { categories } = ecommerceConfig;
                   o arrastra y suelta
                 </p>
                 <input type="file" id="image" name="image" accept="image/*" class="hidden" />
-                <p class="text-xs text-gray-500 mt-1">PNG, JPG hasta 5MB</p>
+                <p class="text-xs text-gray-500 mt-1">PNG, JPG hasta 50MB</p>
                 <div id="upload-status" class="mt-2 text-xs"></div>
               </div>
             </div>
@@ -191,10 +191,9 @@ const { categories } = ecommerceConfig;
       }
     }, 3000);
   }
-
   // Función para validar archivo
   function validateFile(file: File): boolean {
-    const maxSize = 1 * 1024 * 1024; // 1MB máximo
+    const maxSize = 50 * 1024 * 1024; // 50MB máximo
     const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
     
     if (!allowedTypes.includes(file.type)) {
@@ -216,11 +215,10 @@ const { categories } = ecommerceConfig;
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
       const img = new Image();
-      
-      img.onload = () => {
+        img.onload = () => {
         // Redimensionar manteniendo proporción
-        const maxWidth = 600;
-        const maxHeight = 400;
+        const maxWidth = 1200; // Aumentamos para mejor calidad
+        const maxHeight = 800;  // Aumentamos para mejor calidad
         let { width, height } = img;
         
         if (width > height) {
@@ -241,10 +239,10 @@ const { categories } = ecommerceConfig;
         if (ctx) {
           ctx.drawImage(img, 0, 0, width, height);
           
-          // Convertir con calidad reducida
+          // Convertir con mejor calidad para archivos grandes
           canvas.toBlob((blob) => {
             if (blob) resolve(blob);
-          }, 'image/jpeg', 0.7);
+          }, 'image/jpeg', 0.85); // Aumentamos la calidad
         }
       };
       
